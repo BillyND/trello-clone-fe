@@ -1,0 +1,64 @@
+@import "./globalSetting.scss";
+@import url("https://cdn.jsdelivr.net/themify-icons/0.1.2/css/themify-icons.css");
+@import url("https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css");
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: $font-body;
+  line-height: 1.3em;
+}
+
+.trello-container {
+  height: 100vh;
+  display: grid;
+  width: 100% !important;
+  grid-template-rows: 50px 50px 1fr;
+  background-image: $app-bg-image;
+  background-repeat: no-repeat;
+  background-size: cover;
+
+
+  .navbar {
+    &.app {
+      color: white;
+      display: flex;
+      gap: $gap;
+      align-items: center;
+      padding: $gap;
+      background-color: #0D1218;
+
+      .logo-trello {
+        height: 33px;
+        width: 95px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 3px;
+        margin-top: -4px;
+        margin-left: 27px;
+        cursor: pointer;
+
+        img {
+          height: 15.5px;
+        }
+      }
+
+      .logo-trello:hover {
+        background-color: #A6C5E229;
+      }
+    }
+
+    &.board {
+      color: white;
+      display: flex;
+      gap: $gap;
+      align-items: center;
+      padding: $gap;
+      background-color: #0000003d;
+      backdrop-filter: blur(4px);
+      font-size: 18px;
+      font-weight: 700;
+    }
+  }
+
+}

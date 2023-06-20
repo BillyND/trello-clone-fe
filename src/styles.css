@@ -1,0 +1,121 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f4f4f4;
+}
+
+.App {
+    display: flex !important;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 2rem;
+}
+
+header {
+    width: 100%;
+    background-color: #222;
+    color: #fff;
+    text-align: center;
+    padding: 1rem 0;
+    margin-bottom: 2rem;
+}
+
+h1,
+h2,
+p {
+    margin: 0;
+}
+
+.board-container {
+    width: 250px;
+    background-color: #fff;
+    border-radius: 5px;
+    margin: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.board-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background-color: #ccc;
+}
+
+.board-header h2 {
+    font-size: 1.2rem;
+    margin: 0;
+}
+
+.board-header button {
+    background-color: transparent;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.board-header button:hover {
+    opacity: 0.7;
+}
+
+.board {
+    min-height: 100px;
+    padding: 0.5rem;
+}
+
+.card {
+    background-color: #fff;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 0.5rem;
+    cursor: move;
+}
+
+.card p {
+    margin: 0;
+}
+
+.add-card {
+    background-color: #eee;
+    padding: 0.5rem;
+    border: 1px dashed #ccc;
+    border-radius: 5px;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+}
+
+.add-card:hover {
+    background-color: #ddd;
+}
+
+.add-card p {
+    margin: 0;
+}
+
+.add-board {
+    width: 250px;
+    height: 100px;
+    background-color: #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.add-board:hover {
+    opacity: 0.7;
+}
+
+.mainnn {
+    display: flex;
+}

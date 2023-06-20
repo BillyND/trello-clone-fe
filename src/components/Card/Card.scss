@@ -1,0 +1,83 @@
+@import '../../globalSetting.scss';
+
+.content-item {
+    min-width: $with-column-item;
+    box-shadow: rgba(0, 0, 0, 0.18)0px 0.5px 0px 0.8px;
+    border-radius: 8px;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+
+    .icon-delete-card {
+        position: absolute;
+        right: 0;
+        top: 3px;
+        background-color: rgba(235, 235, 235, 0.858);
+
+        .ti-trash {
+            display: none;
+            padding: 7px;
+            border-radius: 7px;
+        }
+    }
+
+    .icon-delete-card:hover {
+        .ti-trash {
+            display: block;
+            background-color: $backGround-button-delete;
+        }
+    }
+
+    .image-item {
+        width: 100%;
+        -webkit-user-drag: none;
+        -khtml-user-drag: none;
+        -moz-user-drag: none;
+        -o-user-drag: none;
+    }
+
+    .title-item {
+        width: 100% !important;
+        padding: 7px 10px !important;
+        line-height: $footer-column-height;
+        display: inline-block;
+        max-width: $with-column-item + 10px;
+        word-wrap: break-word;
+        line-height: 1.3rem;
+        font-size: 15px;
+        justify-content: space-between;
+        position: relative;
+
+        .icon-change-title-card {
+            position: absolute;
+            right: 3px;
+            top: 3px;
+            border-radius: 7px;
+            font-size: 27px;
+            padding: 8px;
+            display: none;
+        }
+    }
+
+    .title-item:hover {
+        .icon-change-title-card {
+            display: block;
+        }
+
+        .icon-change-title-card:hover {
+            background-color: #bcbcbc;
+        }
+
+    }
+}
+
+
+.content-item:hover {
+    background-color: rgba(235, 235, 235, 0.858);
+
+    .icon-delete-card {
+        .ti-trash {
+            display: block;
+        }
+    }
+}
