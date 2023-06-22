@@ -77,7 +77,7 @@ const Column = (props) => {
       if (cloneColumnDrag.current) {
         document.body.appendChild(cloneColumnDrag.current);
         cloneColumnDrag.current.style.position = "absolute";
-        cloneColumnDragX.current = e.pageX - 130;
+        cloneColumnDragX.current = e.pageX - 150;
         cloneColumnDragY.current = e.pageY + 10;
         cloneColumnDrag.current.style.left = cloneColumnDragX.current + "px";
         cloneColumnDrag.current.style.top = cloneColumnDragY.current + "px";

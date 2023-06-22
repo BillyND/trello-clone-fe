@@ -1,8 +1,8 @@
 import axios from "axios";
 
 const instance = axios.create({
-  baseURL: "https://t0weef-3000.csb.app/v1/api/",
-  //   baseURL: "http://localhost:8000/v1/api/",
+  baseURL: "https://qtzvpz-8000.csb.app/v1/api/",
+  // baseURL: "http://localhost:8000/v1/api/",
 });
 
 let cancelTokenSource;
