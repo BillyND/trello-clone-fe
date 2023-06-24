@@ -1,5 +1,5 @@
 ### Deploy
-- Deploy here https://trello-clone-billynd.vercel.app
+- Deploy here <a href="https://trello-clone-billynd.vercel.app" target="_blank">https://trello-clone-billynd.vercel.app</a>
 ### Step run
 - npm install
 - npm start
