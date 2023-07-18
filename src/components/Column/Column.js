@@ -1,17 +1,18 @@
+import debounce from "lodash.debounce";
 import React, { useEffect, useRef, useState } from "react";
-import Card from "../Card/Card";
-import "./Column.scss";
 import { GrClose } from "react-icons/gr";
-import { mapOrder } from "../../utilities/sorts";
+import Swal from "sweetalert2";
 import {
   createCard,
   deleteColumn,
   postSwapCard,
   updateColumn,
 } from "../../services/apiServices";
+import { mapOrder } from "../../utilities/sorts";
+import Card from "../Card/Card";
 import AddCard from "./AddCard";
+import "./Column.scss";
 import UpdateTitleCol from "./UpdateTitleCol";
-import Swal from "sweetalert2";
 
 const Column = (props) => {
   const {
@@ -55,6 +56,10 @@ const Column = (props) => {
   const [isChangeTitleCol, setIsChangeTitleCol] = useState(false);
   const inputNewCardRef = useRef(null);
   useEffect(() => {
+    handleDragCloneNode();
+  }, []);
+
+  const handleDragCloneNode = debounce(() => {
     window.addEventListener("mousedown", (e) => {
       clickMouseY.current = e.clientY;
       dropMouseY.current = e.clientY;
@@ -82,10 +87,7 @@ const Column = (props) => {
         cloneColumnDrag.current.style.left = cloneColumnDragX.current + "px";
         cloneColumnDrag.current.style.top = cloneColumnDragY.current + "px";
         cloneColumnDrag.current.style.transform = "rotate(4deg)";
-      }
-
-      //css clone card drag
-      if (cloneCardDrag.current) {
+      } else if (cloneCardDrag.current) {
         document.body.appendChild(cloneCardDrag.current);
         cloneCardDrag.current.style.position = "absolute";
         cloneCardDrag.current.style.backgroundColor = "white";
@@ -142,9 +144,11 @@ const Column = (props) => {
         objColEnter.current = null;
         cardStart.current = null;
         cardEnter.current = null;
+        cloneColumnDrag.current = null;
+        cloneCardDrag.current = null;
       }, 0);
     });
-  }, []);
+  }, 500);
 
   const handleCardDragOver = (e) => {
     e.preventDefault();
