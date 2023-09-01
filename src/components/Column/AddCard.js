@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import { GrClose } from "react-icons/gr";
 
 function AddCard(props) {
   const { handleAddCard, inputNewCardRef } = props;
@@ -9,6 +8,12 @@ function AddCard(props) {
     inputRef.current.focus();
     inputNewCardRef.current === "" && setTitleCard("");
   }, [inputNewCardRef.current]);
+  const objDiv = document.querySelectorAll(".content");
+  for (const element of objDiv) {
+    setTimeout(() => {
+      element.scrollTop = element.scrollHeight;
+    });
+  }
 
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
