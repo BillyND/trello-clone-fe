@@ -1,4 +1,8 @@
-import axios from "./customAxios";
+import axios, { baseURL } from "./customAxios";
+
+const triggerApi = () => {
+  fetch(baseURL);
+};
 
 const getAllColumn = (data) => {
   const options = {
@@ -99,6 +103,7 @@ const postSwapCard = (colStart, colEnd, cardStart, cardEnd) => {
 };
 
 export {
+  triggerApi,
   getAllColumn,
   putUpdateBoards,
   updateColumnOrder,

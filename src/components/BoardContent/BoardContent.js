@@ -1,16 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
-import "./BoardContent.scss";
-import Column from "../Column/Column";
 import { AiOutlinePlus } from "react-icons/ai";
-import { GrClose } from "react-icons/gr";
-import { mapOrder } from "../../utilities/sorts";
 import {
   createColumn,
   getAllColumn,
-  putUpdateBoards,
+  triggerApi,
   updateColumnOrder,
 } from "../../services/apiServices";
+import { mapOrder } from "../../utilities/sorts";
+import Column from "../Column/Column";
 import AddColumn from "./AddColumn";
+import "./BoardContent.scss";
 function BoardContent(props) {
   const [boardFormDB, setBoardFormDB] = useState([]);
   const [columns, setColumns] = useState([]);
@@ -59,6 +58,7 @@ function BoardContent(props) {
   ];
 
   useEffect(() => {
+    triggerApi();
     window.addEventListener("mousedown", (e) => {
       clickMouseX.current = e.pageX;
     });

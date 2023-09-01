@@ -1,8 +1,9 @@
 import axios from "axios";
 
+export const baseURL = "https://trello-clone-be-navy.vercel.app";
+
 const instance = axios.create({
-  baseURL: "https://trello-clone-be-navy.vercel.app/v1/api/",
-  // baseURL: "http://localhost:8000/v1/api/",
+  baseURL: baseURL + "/v1/api/",
 });
 
 let cancelTokenSource;
