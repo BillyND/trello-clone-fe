@@ -10,6 +10,7 @@ import { mapOrder } from "../../utilities/sorts";
 import Column from "../Column/Column";
 import AddColumn from "./AddColumn";
 import "./BoardContent.scss";
+import { debounce } from "lodash";
 function BoardContent(props) {
   const [boardFormDB, setBoardFormDB] = useState([]);
   const [columns, setColumns] = useState([]);
@@ -99,7 +100,7 @@ function BoardContent(props) {
     listColumns.current = resAllBoards.data.data;
   };
 
-  const handleColumnSwapDragEnter = (e, column) => {
+  const handleColumnSwapDragEnter = debounce((e, column) => {
     e.preventDefault();
     colDragEnd.current = column;
     let colDrag = document.querySelector(".is-column-dragging");
@@ -139,7 +140,7 @@ function BoardContent(props) {
     e.target.className === "footer-add-btn" &&
       !cardDrag &&
       e.target.parentElement.parentElement.classList.add("is-column-dragging");
-  };
+  }, 5);
 
   const handleColumnSwapDragEnd = async (e, column) => {
     if (
@@ -207,7 +208,7 @@ function BoardContent(props) {
           <div
             className={`child-column`}
             key={index + Math.random()}
-            onDragEnter={(e) => {
+            onDragOver={(e) => {
               handleColumnSwapDragEnter(e, column);
             }}
             onDragEnd={(e) => handleColumnSwapDragEnd(e, column)}
