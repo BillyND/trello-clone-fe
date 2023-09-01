@@ -140,7 +140,7 @@ function BoardContent(props) {
     e.target.className === "footer-add-btn" &&
       !cardDrag &&
       e.target.parentElement.parentElement.classList.add("is-column-dragging");
-  }, 5);
+  }, 1);
 
   const handleColumnSwapDragEnd = async (e, column) => {
     if (
