@@ -14,7 +14,10 @@ function HeaderColumn(props) {
 
   return (
     <>
-      <span className="title-column" onClick={() => setIsChangeTitleCol(true)}>
+      <span
+        className="title-column-inside"
+        onClick={() => setIsChangeTitleCol(true)}
+      >
         {!isChangeTitleCol ? (
           <span className="title"> {column.title}</span>
         ) : (
