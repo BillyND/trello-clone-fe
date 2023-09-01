@@ -54,112 +54,103 @@ const Column = (props) => {
   const [isDragCard, setIsDragCard] = useState(true);
   const [draggingCard, setDraggingCard] = useState(false);
   const inputNewCardRef = useRef(null);
-  useEffect(() => {
-    handleDragCloneNode();
-  }, []);
 
-  const handleDragCloneNode = debounce(() => {
-    window.addEventListener("mousedown", (e) => {
-      clickMouseY.current = e.clientY;
-      dropMouseY.current = e.clientY;
-      if (e.target.classList[0] !== "form-control") {
-        setIsDragCard(true);
+  window.addEventListener("mousedown", (e) => {
+    clickMouseY.current = e.clientY;
+    dropMouseY.current = e.clientY;
+    if (e.target.classList[0] !== "form-control") {
+      setIsDragCard(true);
+    }
+    if (cloneColumnDrag.current) {
+      document.body.appendChild(cloneColumnDrag.current);
+    } else if (cloneCardDrag.current) {
+      document.body.appendChild(cloneCardDrag.current);
+    }
+  });
+
+  window.addEventListener("dragstart", (e) => {
+    setShowAddCard(false);
+    if (cloneColumnDrag.current) {
+      cloneColumnDrag.current.classList.add("dragged-item");
+      document.body.appendChild(cloneColumnDrag.current);
+    } else if (cloneCardDrag.current) {
+      cloneCardDrag.current.classList.add("dragged-item");
+      document.body.appendChild(cloneCardDrag.current);
+    }
+  });
+
+  //hide from add card when click board
+  window.addEventListener("mouseup", (e) => {
+    e.target.className === "board-content" && setShowAddCard(false);
+  });
+
+  //move column drag clone with mouse
+  window.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    dropMouseY.current = e.clientY;
+    //css clone column drag
+    if (cloneColumnDrag.current) {
+      cloneColumnDragX.current = e.pageX - 150;
+      cloneColumnDragY.current = e.pageY + 10;
+      cloneColumnDrag.current.style.left = cloneColumnDragX.current + "px";
+      cloneColumnDrag.current.style.top = cloneColumnDragY.current + "px";
+    } else if (cloneCardDrag.current) {
+      cloneCardDragX.current = e.pageX - 130;
+      cloneCardDragY.current = e.pageY + 10;
+      cloneCardDrag.current.style.left = cloneCardDragX.current + "px";
+      cloneCardDrag.current.style.top = cloneCardDragY.current + "px";
+      cloneCardDrag.current.style.borderRadius = "7px";
+    }
+  });
+
+  //remove clone node when drag end
+  window.addEventListener("dragend", async (e) => {
+    e.target.classList.remove("is-card-dragging");
+    if (
+      (objColEnter.current &&
+        objColStart.current &&
+        objColEnter.current.id === objColStart.current.id) ||
+      columnEmpty.current
+    ) {
+      if (column?.id === objColEnter.current?.id) {
+        setColumn({ ...objColEnter.current });
+        setCards([...objColEnter.current.cards]);
       }
-      if (cloneColumnDrag.current) {
-        document.body.appendChild(cloneColumnDrag.current);
-      } else if (cloneCardDrag.current) {
-        document.body.appendChild(cloneCardDrag.current);
+      if (columnEmpty.current && columnEmpty.current.id === column.id) {
+        setCards([...objColEmpty.current.cards]);
+        setColumn({ ...objColEmpty.current });
+        setTimeout(() => {
+          columnEmpty.current = null;
+        }, 0);
       }
-    });
-
-    window.addEventListener("dragstart", (e) => {
-      setShowAddCard(false);
-      if (cloneColumnDrag.current) {
-        document.body.appendChild(cloneColumnDrag.current);
-      } else if (cloneCardDrag.current) {
-        document.body.appendChild(cloneCardDrag.current);
-      }
-    });
-
-    //hide from add card when click board
-    window.addEventListener("mouseup", (e) => {
-      e.target.className === "board-content" && setShowAddCard(false);
-    });
-
-    //move column drag clone with mouse
-    window.addEventListener("dragover", (e) => {
-      e.preventDefault();
-      dropMouseY.current = e.clientY;
-      //css clone column drag
-      if (cloneColumnDrag.current) {
-        cloneColumnDrag.current.style.position = "absolute";
-        cloneColumnDrag.current.style.backgroundColor = "white";
-        cloneColumnDragX.current = e.pageX - 150;
-        cloneColumnDragY.current = e.pageY + 10;
-        cloneColumnDrag.current.style.left = cloneColumnDragX.current + "px";
-        cloneColumnDrag.current.style.top = cloneColumnDragY.current + "px";
-        cloneColumnDrag.current.style.transform = "rotate(5deg)";
-      } else if (cloneCardDrag.current) {
-        cloneCardDrag.current.style.position = "absolute";
-        cloneCardDrag.current.style.backgroundColor = "white";
-        cloneCardDragX.current = e.pageX - 130;
-        cloneCardDragY.current = e.pageY + 10;
-        cloneCardDrag.current.style.left = cloneCardDragX.current + "px";
-        cloneCardDrag.current.style.top = cloneCardDragY.current + "px";
-        cloneCardDrag.current.style.transform = "rotate(5deg)";
-        cloneCardDrag.current.style.borderRadius = "7px";
-      }
-    });
-
-    //remove clone node when drag end
-    window.addEventListener("dragend", async (e) => {
-      e.target.classList.remove("is-card-dragging");
+    } else {
       if (
-        (objColEnter.current &&
-          objColStart.current &&
-          objColEnter.current.id === objColStart.current.id) ||
-        columnEmpty.current
+        column &&
+        objColStart.current &&
+        column.id === objColStart.current?.id
       ) {
-        if (column?.id === objColEnter.current?.id) {
-          setColumn({ ...objColEnter.current });
-          setCards([...objColEnter.current.cards]);
-        }
-        if (columnEmpty.current && columnEmpty.current.id === column.id) {
-          setCards([...objColEmpty.current.cards]);
-          setColumn({ ...objColEmpty.current });
-          setTimeout(() => {
-            columnEmpty.current = null;
-          }, 0);
-        }
-      } else {
-        if (
-          column &&
-          objColStart.current &&
-          column.id === objColStart.current?.id
-        ) {
-          setColumn({ ...objColStart.current });
-          setCards([...objColStart.current.cards]);
-        } else if (
-          column &&
-          objColEnter.current &&
-          column.id === objColEnter.current.id
-        ) {
-          setColumn({ ...objColEnter.current });
-          setCards([...objColEnter.current.cards]);
-        }
+        setColumn({ ...objColStart.current });
+        setCards([...objColStart.current.cards]);
+      } else if (
+        column &&
+        objColEnter.current &&
+        column.id === objColEnter.current.id
+      ) {
+        setColumn({ ...objColEnter.current });
+        setCards([...objColEnter.current.cards]);
       }
+    }
 
-      setTimeout(() => {
-        columnEmpty.current = null;
-        objColStart.current = null;
-        objColEnter.current = null;
-        cardStart.current = null;
-        cardEnter.current = null;
-        cloneColumnDrag.current = null;
-        cloneCardDrag.current = null;
-      }, 0);
-    });
-  }, 500);
+    setTimeout(() => {
+      columnEmpty.current = null;
+      objColStart.current = null;
+      objColEnter.current = null;
+      cardStart.current = null;
+      cardEnter.current = null;
+      cloneColumnDrag.current = null;
+      cloneCardDrag.current = null;
+    }, 0);
+  });
 
   const handleCardDragOver = (e) => {
     e.preventDefault();

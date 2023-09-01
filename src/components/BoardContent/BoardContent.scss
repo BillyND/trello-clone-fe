@@ -75,3 +75,9 @@ $color-drag: rgb(46, 46, 46);
     }
   }
 }
+
+.header {
+  height: 46px !important;
+  display: flex;
+  align-items: center;
+}

@@ -14,9 +14,9 @@ function HeaderColumn(props) {
 
   return (
     <>
-      <span onClick={() => setIsChangeTitleCol(true)}>
+      <span className="title-column" onClick={() => setIsChangeTitleCol(true)}>
         {!isChangeTitleCol ? (
-          <span className="title mt-3"> {column.title}</span>
+          <span className="title"> {column.title}</span>
         ) : (
           <UpdateTitleCol
             handleChangeTitleColumn={handleChangeTitleColumn}
@@ -27,7 +27,7 @@ function HeaderColumn(props) {
       </span>
       {!isChangeTitleCol && (
         <i
-          className="icon-delete-column ti-trash mt-1"
+          className="icon-delete-column ti-trash mb-2 mt-2"
           onClick={() => {
             Swal.fire(
               "Are you sure delete column?",
