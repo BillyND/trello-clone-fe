@@ -225,6 +225,7 @@ const Column = (props) => {
   const handleDragCardEnter = (e, card) => {
     isDragFooter.current = false;
     e.preventDefault();
+
     if (colDragStart.current === null) {
       cardEnter.current = card;
       let colDrag = document.querySelector(".is-column-dragging");
@@ -354,6 +355,7 @@ const Column = (props) => {
 
   const handleHeaderColDragEnter = (e) => {
     e.preventDefault();
+    e.stopPropagation();
     colDragEnd.current = column;
     if (
       cards.length > 0 &&

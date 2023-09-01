@@ -26,6 +26,10 @@ function AddColumn(props) {
   return (
     <div className="form-add-column">
       <input
+        onDragStart={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+        }}
         type="text"
         className="form-control input-add-col"
         ref={inputRef}

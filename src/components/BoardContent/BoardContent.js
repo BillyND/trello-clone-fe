@@ -50,7 +50,7 @@ function BoardContent(props) {
     useRef(null),
     useRef(null),
   ];
-  const [clickMouseY, dropMouseY, inputRef, listColumns] = [
+  const [clickMouseY, dropMouseY, listColumns] = [
     useRef(null),
     useRef(null),
     useRef(),

@@ -112,6 +112,10 @@ function Card(props) {
       ) : (
         <div className="form-change-card">
           <input
+            onDragStart={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+            }}
             className="form-control input-title-card"
             ref={inputRef}
             value={inputCardTitle}

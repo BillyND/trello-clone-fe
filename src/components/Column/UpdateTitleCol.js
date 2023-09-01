@@ -29,6 +29,10 @@ function UpdateTitleCol(props) {
         ref={inputRefTitle}
         className="form-control input-change-title"
         onKeyDown={(e) => handleKeyDownTitle(e)}
+        onDragStart={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+        }}
       />
     </div>
   );
