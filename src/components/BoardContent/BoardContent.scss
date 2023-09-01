@@ -2,80 +2,76 @@
 $color-drag: rgb(46, 46, 46);
 
 .is-card-dragging {
-    background-color: $color-drag !important;
-    color: $color-drag !important;
-    box-shadow: none;
-    opacity: 0.2;
+  background-color: $color-drag !important;
+  color: $color-drag !important;
+  box-shadow: none;
+  opacity: 0.2;
 }
-
 
 .is-column-dragging {
-    background-color: $color-drag !important;
-    color: $color-drag !important;
-    box-shadow: none;
-    opacity: 0.2;
+  background-color: $color-drag !important;
+  color: $color-drag !important;
+  box-shadow: none;
+  opacity: 0.2;
 
-    .content-item,
-    .footer {
-        opacity: 0;
-    }
+  .content-item,
+  .footer {
+    opacity: 0;
+  }
 }
 
-
 .board-content {
-    padding: $gap;
+  padding: $gap;
+  display: flex;
+  gap: $gap;
+  margin: 0 $gap $gap;
+  overflow-y: hidden;
+  overflow-x: scroll;
+
+  &::-webkit-scrollbar {
+    -webkit-appearance: none;
+    background-color: #ffffff00;
+    border-radius: $gap;
+  }
+
+  &::-webkit-scrollbar:horizontal {
+    height: 12px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #8f8f8fbb;
+    border-radius: $gap;
+  }
+
+  .btn-add-column {
+    height: $header-column-height + 10px;
+    background-color: #0000008f;
+    min-width: $with-column;
+    text-align: left;
     display: flex;
+    align-items: center;
     gap: $gap;
-    margin: 0 $gap $gap;
-    overflow-y: hidden;
-    overflow-x: scroll;
+    color: white;
+    transition: 0.1s;
+    border: none;
+    border-radius: 10px;
+  }
 
-    &::-webkit-scrollbar {
-        -webkit-appearance: none;
-        background-color: #ffffff00;
-        border-radius: $gap;
+  .btn-add-column:hover {
+    color: white;
+    background-color: rgba(255, 255, 255, 0.116);
+  }
+
+  .form-add-column {
+    min-width: $with-column;
+    background-color: white;
+    height: fit-content;
+    padding: $gap;
+    border-radius: 10px;
+    box-sizing: border-box !important;
+
+    .btn-close {
+      cursor: pointer;
     }
-
-    &::-webkit-scrollbar:horizontal {
-        height: 12px;
-    }
-
-    &::-webkit-scrollbar-thumb {
-        background-color: #8f8f8fbb;
-        border-radius: $gap;
-    }
-
-    .btn-add-column {
-        height: $header-column-height + 10px;
-        background-color: #0000008f;
-        min-width: $with-column ;
-        text-align: left;
-        display: flex;
-        align-items: center;
-        gap: $gap;
-        color: white;
-        transition: 0.1s;
-        border: none;
-        border-radius: 10px;
-    }
-
-    .btn-add-column:hover {
-        color: white;
-        background-color: rgba(255, 255, 255, 0.116);
-    }
-
-
-    .form-add-column {
-        min-width: $with-column ;
-        background-color: white;
-        height: fit-content;
-        padding: $gap;
-        border-radius: 10px;
-        box-sizing: border-box !important;
-
-        .btn-close {
-            cursor: pointer;
-        }
-    }
-
+  }
 }

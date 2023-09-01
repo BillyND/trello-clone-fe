@@ -1,7 +1,6 @@
 import debounce from "lodash.debounce";
 import React, { useEffect, useRef, useState } from "react";
 import { GrClose } from "react-icons/gr";
-import Swal from "sweetalert2";
 import {
   createCard,
   deleteColumn,
@@ -13,6 +12,7 @@ import Card from "../Card/Card";
 import AddCard from "./AddCard";
 import "./Column.scss";
 import UpdateTitleCol from "./UpdateTitleCol";
+import HeaderColumn from "./HeaderColumn";
 
 const Column = (props) => {
   const {
@@ -53,7 +53,6 @@ const Column = (props) => {
   const [showAddCard, setShowAddCard] = useState(false);
   const [isDragCard, setIsDragCard] = useState(true);
   const [draggingCard, setDraggingCard] = useState(false);
-  const [isChangeTitleCol, setIsChangeTitleCol] = useState(false);
   const inputNewCardRef = useRef(null);
   useEffect(() => {
     handleDragCloneNode();
@@ -64,8 +63,21 @@ const Column = (props) => {
       clickMouseY.current = e.clientY;
       dropMouseY.current = e.clientY;
       if (e.target.classList[0] !== "form-control") {
-        setIsChangeTitleCol(false);
         setIsDragCard(true);
+      }
+      if (cloneColumnDrag.current) {
+        document.body.appendChild(cloneColumnDrag.current);
+      } else if (cloneCardDrag.current) {
+        document.body.appendChild(cloneCardDrag.current);
+      }
+    });
+
+    window.addEventListener("dragstart", (e) => {
+      setShowAddCard(false);
+      if (cloneColumnDrag.current) {
+        document.body.appendChild(cloneColumnDrag.current);
+      } else if (cloneCardDrag.current) {
+        document.body.appendChild(cloneCardDrag.current);
       }
     });
 
@@ -80,22 +92,21 @@ const Column = (props) => {
       dropMouseY.current = e.clientY;
       //css clone column drag
       if (cloneColumnDrag.current) {
-        document.body.appendChild(cloneColumnDrag.current);
         cloneColumnDrag.current.style.position = "absolute";
+        cloneColumnDrag.current.style.backgroundColor = "white";
         cloneColumnDragX.current = e.pageX - 150;
         cloneColumnDragY.current = e.pageY + 10;
         cloneColumnDrag.current.style.left = cloneColumnDragX.current + "px";
         cloneColumnDrag.current.style.top = cloneColumnDragY.current + "px";
-        cloneColumnDrag.current.style.transform = "rotate(4deg)";
+        cloneColumnDrag.current.style.transform = "rotate(5deg)";
       } else if (cloneCardDrag.current) {
-        document.body.appendChild(cloneCardDrag.current);
         cloneCardDrag.current.style.position = "absolute";
         cloneCardDrag.current.style.backgroundColor = "white";
         cloneCardDragX.current = e.pageX - 130;
         cloneCardDragY.current = e.pageY + 10;
         cloneCardDrag.current.style.left = cloneCardDragX.current + "px";
         cloneCardDrag.current.style.top = cloneCardDragY.current + "px";
-        cloneCardDrag.current.style.transform = "rotate(4deg)";
+        cloneCardDrag.current.style.transform = "rotate(5deg)";
         cloneCardDrag.current.style.borderRadius = "7px";
       }
     });
@@ -433,38 +444,15 @@ const Column = (props) => {
         <span
           className="title-column"
           onClick={() => {
-            setIsChangeTitleCol(true);
             setIsDragCard(false);
           }}
         >
-          {!isChangeTitleCol ? (
-            <span className="title mt-3"> {column.title}</span>
-          ) : (
-            <UpdateTitleCol
-              handleChangeTitleColumn={handleChangeTitleColumn}
-              column={column}
-              setIsChangeTitleCol={setIsChangeTitleCol}
-            />
-          )}
+          <HeaderColumn
+            column={column}
+            handleChangeTitleColumn={handleChangeTitleColumn}
+            handleDeleteColumn={handleDeleteColumn}
+          />
         </span>
-        {!isChangeTitleCol && (
-          <div
-            className="icon-delete-column"
-            onClick={() => {
-              Swal.fire(
-                "Are you sure delete column?",
-                `"${column.title}"`,
-                "question"
-              ).then((e) => {
-                if (e.isConfirmed) {
-                  handleDeleteColumn();
-                }
-              });
-            }}
-          >
-            <i className="ti-trash"></i>
-          </div>
-        )}
       </header>
 
       <div

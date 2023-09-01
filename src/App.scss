@@ -3,7 +3,8 @@
 @import url("https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css");
 
 body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   font-size: $font-body;
   line-height: 1.3em;
 }
@@ -17,7 +18,6 @@ body {
   background-repeat: no-repeat;
   background-size: cover;
 
-
   .navbar {
     &.app {
       color: white;
@@ -25,7 +25,7 @@ body {
       gap: $gap;
       align-items: center;
       padding: $gap;
-      background-color: #0D1218;
+      background-color: #0d1218;
 
       .logo-trello {
         height: 33px;
@@ -44,7 +44,7 @@ body {
       }
 
       .logo-trello:hover {
-        background-color: #A6C5E229;
+        background-color: #a6c5e229;
       }
     }
 
@@ -60,5 +60,8 @@ body {
       font-weight: 700;
     }
   }
+}
 
+.header-update-column {
+  display: flex;
 }

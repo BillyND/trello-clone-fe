@@ -128,7 +128,7 @@ function BoardContent(props) {
       e.target.parentElement.parentElement.classList.add("is-column-dragging");
     e.target.classList[0] === "title" &&
       !cardDrag &&
-      e.target.parentElement.parentElement.parentElement.classList.add(
+      e.target.parentElement.parentElement.parentElement.parentElement.classList.add(
         "is-column-dragging"
       );
     e.target.classList[0] === "title-item" &&
