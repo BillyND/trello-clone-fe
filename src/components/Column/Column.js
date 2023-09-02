@@ -1,5 +1,4 @@
-import debounce from "lodash.debounce";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { GrClose } from "react-icons/gr";
 import {
   createCard,
@@ -11,7 +10,6 @@ import { mapOrder } from "../../utilities/sorts";
 import Card from "../Card/Card";
 import AddCard from "./AddCard";
 import "./Column.scss";
-import UpdateTitleCol from "./UpdateTitleCol";
 import HeaderColumn from "./HeaderColumn";
 
 const Column = (props) => {
@@ -69,13 +67,17 @@ const Column = (props) => {
   });
 
   window.addEventListener("dragstart", (e) => {
-    setShowAddCard(false);
-    if (cloneColumnDrag.current) {
-      cloneColumnDrag.current.classList.add("dragged-item");
-      document.body.appendChild(cloneColumnDrag.current);
-    } else if (cloneCardDrag.current) {
-      cloneCardDrag.current.classList.add("dragged-item");
-      document.body.appendChild(cloneCardDrag.current);
+    try {
+      setShowAddCard(false);
+      if (cloneColumnDrag.current) {
+        cloneColumnDrag.current.classList.add("dragged-item");
+        document.body.appendChild(cloneColumnDrag.current);
+      } else if (cloneCardDrag.current) {
+        cloneCardDrag.current.classList.add("dragged-item");
+        document.body.appendChild(cloneCardDrag.current);
+      }
+    } catch (error) {
+      console.error(error);
     }
   });
 
@@ -87,19 +89,22 @@ const Column = (props) => {
   //move column drag clone with mouse
   window.addEventListener("dragover", (e) => {
     e.preventDefault();
-    dropMouseY.current = e.clientY;
-    //css clone column drag
-    if (cloneColumnDrag.current) {
-      cloneColumnDragX.current = e.pageX - 150;
-      cloneColumnDragY.current = e.pageY + 10;
-      cloneColumnDrag.current.style.left = cloneColumnDragX.current + "px";
-      cloneColumnDrag.current.style.top = cloneColumnDragY.current + "px";
-    } else if (cloneCardDrag.current) {
-      cloneCardDragX.current = e.pageX - 130;
-      cloneCardDragY.current = e.pageY + 10;
-      cloneCardDrag.current.style.left = cloneCardDragX.current + "px";
-      cloneCardDrag.current.style.top = cloneCardDragY.current + "px";
-      cloneCardDrag.current.style.borderRadius = "7px";
+    try {
+      dropMouseY.current = e.clientY;
+      //css clone column drag
+      if (cloneColumnDrag.current) {
+        cloneColumnDragX.current = e.pageX - 170;
+        cloneColumnDragY.current = e.pageY;
+        cloneColumnDrag.current.style.left = cloneColumnDragX.current + "px";
+        cloneColumnDrag.current.style.top = cloneColumnDragY.current + "px";
+      } else if (cloneCardDrag.current) {
+        cloneCardDragX.current = e.pageX - 130;
+        cloneCardDragY.current = e.pageY + 10;
+        cloneCardDrag.current.style.left = cloneCardDragX.current + "px";
+        cloneCardDrag.current.style.top = cloneCardDragY.current + "px";
+      }
+    } catch (error) {
+      console.error(error);
     }
   });
 
@@ -167,8 +172,6 @@ const Column = (props) => {
   };
 
   const handleDragCardLeave = (e) => {
-    // colDragEnd.current = null
-
     if (cards.length === 0) {
       columnEmpty.current = null;
     }
