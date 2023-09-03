@@ -86,7 +86,7 @@ const Column = (props) => {
     handleWindowDragEnd(e);
   });
 
-  const handleWindowDragStart = debounce((e) => {
+  const handleWindowDragStart = (e) => {
     setShowAddCard(false);
     if (cloneColumnDrag.current) {
       cloneColumnDrag.current.classList.add("dragged-item");
@@ -95,9 +95,9 @@ const Column = (props) => {
       cloneCardDrag.current.classList.add("dragged-item");
       document.body.appendChild(cloneCardDrag.current);
     }
-  }, 0);
+  };
 
-  const handleWindowDragOver = debounce((e) => {
+  const handleWindowDragOver = (e) => {
     e.preventDefault();
     dropMouseY.current = e.clientY;
     //css clone column drag
@@ -112,55 +112,59 @@ const Column = (props) => {
       cloneCardDrag.current.style.left = cloneCardDragX.current + "px";
       cloneCardDrag.current.style.top = cloneCardDragY.current + "px";
     }
-  }, 0);
+  };
 
   const handleWindowDragEnd = debounce((e) => {
-    e.target.classList.remove("is-card-dragging");
-    if (
-      (objColEnter.current &&
-        objColStart.current &&
-        objColEnter.current.id === objColStart.current.id) ||
-      columnEmpty.current
-    ) {
-      if (column?.id === objColEnter.current?.id) {
-        setColumn({ ...objColEnter.current });
-        setCards([...objColEnter.current.cards]);
-      }
-      if (columnEmpty.current && columnEmpty.current.id === column.id) {
-        setCards([...objColEmpty.current.cards]);
-        setColumn({ ...objColEmpty.current });
-        setTimeout(() => {
-          columnEmpty.current = null;
-        }, 0);
-      }
-    } else {
+    try {
+      e.target.classList.remove("is-card-dragging");
       if (
-        column &&
-        objColStart.current &&
-        column.id === objColStart.current?.id
+        (objColEnter.current &&
+          objColStart.current &&
+          objColEnter.current.id === objColStart.current.id) ||
+        columnEmpty.current
       ) {
-        setColumn({ ...objColStart.current });
-        setCards([...objColStart.current.cards]);
-      } else if (
-        column &&
-        objColEnter.current &&
-        column.id === objColEnter.current.id
-      ) {
-        setColumn({ ...objColEnter.current });
-        setCards([...objColEnter.current.cards]);
+        if (column?.id === objColEnter.current?.id) {
+          setColumn({ ...objColEnter.current });
+          setCards([...objColEnter.current.cards]);
+        }
+        if (columnEmpty.current && columnEmpty.current.id === column.id) {
+          setCards([...objColEmpty.current.cards]);
+          setColumn({ ...objColEmpty.current });
+          setTimeout(() => {
+            columnEmpty.current = null;
+          }, 0);
+        }
+      } else {
+        if (
+          column &&
+          objColStart.current &&
+          column.id === objColStart.current?.id
+        ) {
+          setColumn({ ...objColStart.current });
+          setCards([...objColStart.current.cards]);
+        } else if (
+          column &&
+          objColEnter.current &&
+          column.id === objColEnter.current.id
+        ) {
+          setColumn({ ...objColEnter.current });
+          setCards([...objColEnter.current.cards]);
+        }
       }
-    }
 
-    setTimeout(() => {
-      columnEmpty.current = null;
-      objColStart.current = null;
-      objColEnter.current = null;
-      cardStart.current = null;
-      cardEnter.current = null;
-      cloneColumnDrag.current = null;
-      cloneCardDrag.current = null;
-    }, 0);
-    localStorage.setItem("listColumns", JSON.stringify(listColumns.current));
+      setTimeout(() => {
+        columnEmpty.current = null;
+        objColStart.current = null;
+        objColEnter.current = null;
+        cardStart.current = null;
+        cardEnter.current = null;
+        cloneColumnDrag.current = null;
+        cloneCardDrag.current = null;
+      }, 0);
+      localStorage.setItem("listColumns", JSON.stringify(listColumns.current));
+    } catch (error) {
+      console.error(error);
+    }
   }, 0);
 
   const handleCardDragOver = debounce((e) => {

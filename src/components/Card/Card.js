@@ -30,6 +30,12 @@ function Card(props) {
     });
   }, []);
 
+  window.addEventListener("dragstart", (e) => {
+    if (isChangeTitleCard) {
+      setIsChangeTitleCard(false);
+    }
+  });
+
   const handleClickEditCard = async (e) => {
     await setIsChangeTitleCard(true);
     setInputCardTitle(cardTitle);
