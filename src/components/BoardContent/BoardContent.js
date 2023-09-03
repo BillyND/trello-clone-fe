@@ -10,6 +10,7 @@ import { mapOrder } from "../../utilities/sorts";
 import Column from "../Column/Column";
 import AddColumn from "./AddColumn";
 import "./BoardContent.scss";
+import { initListColumn } from "../../utilities/initData";
 function BoardContent(props) {
   const [boardFormDB, setBoardFormDB] = useState([]);
   const [columns, setColumns] = useState([]);
@@ -53,12 +54,10 @@ function BoardContent(props) {
   const [clickMouseY, dropMouseY, listColumns] = [
     useRef(null),
     useRef(null),
-    useRef(),
-    useRef(null),
+    useRef(initListColumn),
   ];
 
   useEffect(() => {
-    triggerApi();
     window.addEventListener("mousedown", (e) => {
       clickMouseX.current = e.pageX;
     });
@@ -82,11 +81,20 @@ function BoardContent(props) {
         cloneCardDrag.current.remove();
       }
     });
-    fetchAllColumn();
+
+    try {
+      triggerApi();
+
+      fetchAllColumn();
+    } catch (error) {}
   }, []);
 
   //fetch all column
   const fetchAllColumn = async () => {
+    const listColumnsLocal = JSON.parse(localStorage.getItem("listColumns"));
+    listColumns.current = listColumnsLocal;
+    setColumns(listColumnsLocal.columns);
+
     const boardIdFind = "board-1";
     const resAllBoards = await getAllColumn(boardIdFind);
     setBoardFormDB(resAllBoards.data.data);
@@ -97,6 +105,7 @@ function BoardContent(props) {
     );
     setColumns(listColOrder);
     listColumns.current = resAllBoards.data.data;
+    localStorage.setItem("listColumns", JSON.stringify(listColumns.current));
   };
 
   const handleColumnSwapDragEnter = (e, column) => {
@@ -147,32 +156,40 @@ function BoardContent(props) {
       colDragStart.current &&
       colDragEnd.current.id !== colDragStart.current.id
     ) {
-      idxColDragStart.current = listColumns.current.columns.findIndex(
+      idxColDragStart.current = listColumns.current?.columns.findIndex(
         (item) => item.id === colDragStart.current.id
       );
-      idxColDragEnd.current = listColumns.current.columns.findIndex(
+      idxColDragEnd.current = listColumns.current?.columns.findIndex(
         (item) => item.id === colDragEnd.current.id
       );
 
       //swap column
-      if (idxColDragStart.current !== -1) {
-        listColumns.current.columns[idxColDragStart.current] =
-          colDragEnd.current;
-        listColumns.current.columnOrder[idxColDragStart.current] =
-          colDragEnd.current.id;
-      }
-      if (idxColDragEnd.current !== -1) {
-        listColumns.current.columns[idxColDragEnd.current] =
-          colDragStart.current;
-        listColumns.current.columnOrder[idxColDragEnd.current] =
-          colDragStart.current.id;
-      }
-      //re-render list column
-      setColumns([...listColumns.current.columns]);
+      if (idxColDragStart.current !== -1 && listColumns.current.columns) {
+        listColumns.current.columns.splice(idxColDragStart.current, 1);
 
-      //update columnOrder
-      updateColumnOrder("board-1", listColumns.current.columnOrder);
+        listColumns.current.columnOrder.splice(idxColDragStart.current, 1);
+      }
+      if (idxColDragEnd.current !== -1 && listColumns.current.columns) {
+        listColumns.current.columns.splice(
+          idxColDragEnd.current,
+          0,
+          colDragStart.current
+        );
+
+        listColumns.current.columnOrder.splice(
+          idxColDragEnd.current,
+          0,
+          colDragStart.current.id
+        );
+      }
+
       setTimeout(() => {
+        //re-render list column
+        setColumns([...listColumns.current.columns]);
+
+        //update columnOrder
+        updateColumnOrder("board-1", listColumns.current.columnOrder);
+
         colDragEnd.current = null;
         colDragStart.current = null;
       }, 0);
@@ -195,6 +212,7 @@ function BoardContent(props) {
     setColumns([...columns, dataColumnAdd]);
     listColumns.current.columns.push(dataColumnAdd);
     listColumns.current.columnOrder.push(dataColumnAdd.id);
+    localStorage.setItem("listColumns", JSON.stringify(listColumns.current));
 
     //post column added
     createColumn(dataColumnAdd);
@@ -202,7 +220,7 @@ function BoardContent(props) {
 
   return (
     <div className="board-content">
-      {columns.map((column, index) => {
+      {columns?.map((column, index) => {
         return (
           <div
             className={`child-column`}

@@ -67,17 +67,13 @@ const Column = (props) => {
   });
 
   window.addEventListener("dragstart", (e) => {
-    try {
-      setShowAddCard(false);
-      if (cloneColumnDrag.current) {
-        cloneColumnDrag.current.classList.add("dragged-item");
-        document.body.appendChild(cloneColumnDrag.current);
-      } else if (cloneCardDrag.current) {
-        cloneCardDrag.current.classList.add("dragged-item");
-        document.body.appendChild(cloneCardDrag.current);
-      }
-    } catch (error) {
-      console.error(error);
+    setShowAddCard(false);
+    if (cloneColumnDrag.current) {
+      cloneColumnDrag.current.classList.add("dragged-item");
+      document.body.appendChild(cloneColumnDrag.current);
+    } else if (cloneCardDrag.current) {
+      cloneCardDrag.current.classList.add("dragged-item");
+      document.body.appendChild(cloneCardDrag.current);
     }
   });
 
@@ -89,22 +85,18 @@ const Column = (props) => {
   //move column drag clone with mouse
   window.addEventListener("dragover", (e) => {
     e.preventDefault();
-    try {
-      dropMouseY.current = e.clientY;
-      //css clone column drag
-      if (cloneColumnDrag.current) {
-        cloneColumnDragX.current = e.pageX - 170;
-        cloneColumnDragY.current = e.pageY;
-        cloneColumnDrag.current.style.left = cloneColumnDragX.current + "px";
-        cloneColumnDrag.current.style.top = cloneColumnDragY.current + "px";
-      } else if (cloneCardDrag.current) {
-        cloneCardDragX.current = e.pageX - 130;
-        cloneCardDragY.current = e.pageY + 10;
-        cloneCardDrag.current.style.left = cloneCardDragX.current + "px";
-        cloneCardDrag.current.style.top = cloneCardDragY.current + "px";
-      }
-    } catch (error) {
-      console.error(error);
+    dropMouseY.current = e.clientY;
+    //css clone column drag
+    if (cloneColumnDrag.current) {
+      cloneColumnDragX.current = e.pageX - 170;
+      cloneColumnDragY.current = e.pageY;
+      cloneColumnDrag.current.style.left = cloneColumnDragX.current + "px";
+      cloneColumnDrag.current.style.top = cloneColumnDragY.current + "px";
+    } else if (cloneCardDrag.current) {
+      cloneCardDragX.current = e.pageX - 130;
+      cloneCardDragY.current = e.pageY + 10;
+      cloneCardDrag.current.style.left = cloneCardDragX.current + "px";
+      cloneCardDrag.current.style.top = cloneCardDragY.current + "px";
     }
   });
 
@@ -155,6 +147,7 @@ const Column = (props) => {
       cloneColumnDrag.current = null;
       cloneCardDrag.current = null;
     }, 0);
+    localStorage.setItem("listColumns", JSON.stringify(listColumns.current));
   });
 
   const handleCardDragOver = (e) => {
@@ -232,107 +225,220 @@ const Column = (props) => {
   };
 
   const swapCard = () => {
-    //find  column start / enter
-    idxColStart.current = listColumns.current.columns.findIndex(
-      (item) => item.id === cardStart.current.columnId
-    );
-    idxColEnter.current = listColumns.current.columns.findIndex(
-      (item) => item.id === cardEnter.current.columnId
-    );
+    try {
+      //find  column start / enter
+      idxColStart.current = listColumns.current.columns.findIndex(
+        (item) => item.id === cardStart.current?.columnId
+      );
+      idxColEnter.current = listColumns.current.columns.findIndex(
+        (item) => item.id === cardEnter.current?.columnId
+      );
 
-    if (idxColStart.current !== -1) {
-      objColStart.current = listColumns.current.columns[idxColStart.current];
-    }
+      if (idxColStart.current !== -1) {
+        objColStart.current = listColumns.current.columns[idxColStart.current];
+      }
 
-    if (idxColEnter.current !== -1) {
-      objColEnter.current = listColumns.current.columns[idxColEnter.current];
-    }
+      if (idxColEnter.current !== -1) {
+        objColEnter.current = listColumns.current.columns[idxColEnter.current];
+      }
 
-    //find card start / enter
-    idxCardStart.current = objColStart.current.cards.findIndex(
-      (item) => item.id === cardStart.current.id
-    );
-    idxCardEnter.current = objColEnter.current.cards.findIndex(
-      (item) => item.id === cardEnter.current.id
-    );
-    objCardStart.current = objColStart.current.cards[idxCardStart.current];
-    objCardEnter.current = objColEnter.current.cards[idxCardEnter.current];
+      //find card start / enter
+      idxCardStart.current = objColStart.current.cards.findIndex(
+        (item) => item.id === cardStart.current.id
+      );
+      idxCardEnter.current = objColEnter.current.cards.findIndex(
+        (item) => item.id === cardEnter.current.id
+      );
+      objCardStart.current = objColStart.current.cards[idxCardStart.current];
+      objCardEnter.current = objColEnter.current.cards[idxCardEnter.current];
 
-    //swap card start/enter
-    if (
-      idxColStart.current === idxColEnter.current &&
-      columnEmpty.current === null
-    ) {
-      //swap card in one column
-      listColumns.current.columns[idxColStart.current].cards[
-        idxCardStart.current
-      ] = objCardEnter.current;
-      listColumns.current.columns[idxColEnter.current].cards[
-        idxCardEnter.current
-      ] = objCardStart.current;
-
-      //swap orderCard in one column
-      listColumns.current.columns[idxColStart.current].cardOrder[
-        idxCardStart.current
-      ] = objCardEnter.current.id;
-
-      listColumns.current.columns[idxColEnter.current].cardOrder[
-        idxCardEnter.current
-      ] = objCardStart.current.id;
-    } else {
-      objCardStart.current.columnId =
+      //swap card start/enter
+      if (
+        idxColStart.current === idxColEnter.current &&
         columnEmpty.current === null
-          ? objCardEnter.current.columnId
-          : columnEmpty.current.id;
-
-      //remove card from column start
-      listColumns.current.columns[idxColStart.current].cards =
-        listColumns.current.columns[idxColStart.current].cards.filter(
-          (item) => item.id !== objCardStart.current.id
-        );
-      listColumns.current.columns[idxColStart.current].cardOrder =
-        listColumns.current.columns[idxColStart.current].cardOrder.filter(
-          (item) => item !== objCardStart.current.id
+      ) {
+        //swap card in one column
+        listColumns.current.columns[idxColStart.current].cards.splice(
+          idxCardStart.current,
+          1
         );
 
-      if (columnEmpty.current === null) {
-        //push //push card to column enter
-        if (isDragFooter.current) {
-          listColumns.current.columns[idxColEnter.current].cards.push(
-            objCardStart.current
+        listColumns.current.columns[idxColStart.current].cards.splice(
+          idxCardEnter.current,
+          0,
+          objCardStart.current
+        );
+
+        //swap orderCard in one column
+        listColumns.current.columns[idxColStart.current].cardOrder.splice(
+          idxCardStart.current,
+          1
+        );
+
+        listColumns.current.columns[idxColStart.current].cardOrder.splice(
+          idxCardEnter.current,
+          0,
+          objCardStart.current.id
+        );
+      } else {
+        objCardStart.current.columnId =
+          columnEmpty.current === null
+            ? objCardEnter.current.columnId
+            : columnEmpty.current.id;
+
+        //remove card from column start
+        listColumns.current.columns[idxColStart.current].cards =
+          listColumns.current.columns[idxColStart.current].cards.filter(
+            (item) => item.id !== objCardStart.current.id
           );
-          listColumns.current.columns[idxColEnter.current].cardOrder.push(
-            objCardStart.current.id
+        listColumns.current.columns[idxColStart.current].cardOrder =
+          listColumns.current.columns[idxColStart.current].cardOrder.filter(
+            (item) => item !== objCardStart.current.id
           );
-          isDragFooter.current = false;
+
+        if (columnEmpty.current === null) {
+          //push //push card to column enter
+          if (isDragFooter.current) {
+            listColumns.current.columns[idxColEnter.current].cards.push(
+              objCardStart.current
+            );
+            listColumns.current.columns[idxColEnter.current].cardOrder.push(
+              objCardStart.current.id
+            );
+            isDragFooter.current = false;
+          } else {
+            listColumns.current.columns[idxColEnter.current].cards.splice(
+              idxCardEnter.current,
+              0,
+              objCardStart.current
+            );
+            listColumns.current.columns[idxColEnter.current].cardOrder.splice(
+              idxCardEnter.current,
+              0,
+              objCardStart.current.id
+            );
+          }
         } else {
-          listColumns.current.columns[idxColEnter.current].cards.splice(
-            idxCardEnter.current,
-            0,
+          idxColumnEmpty.current = listColumns.current.columns.findIndex(
+            (item) => item.id === columnEmpty.current.id
+          );
+          objColEmpty.current =
+            listColumns.current.columns[idxColumnEmpty.current];
+          //push card to column empty
+          listColumns.current.columns[idxColumnEmpty.current].cards.push(
             objCardStart.current
           );
-          listColumns.current.columns[idxColEnter.current].cardOrder.splice(
-            idxCardEnter.current,
-            0,
+          listColumns.current.columns[idxColumnEmpty.current].cardOrder.push(
             objCardStart.current.id
           );
         }
-      } else {
-        idxColumnEmpty.current = listColumns.current.columns.findIndex(
-          (item) => item.id === columnEmpty.current.id
-        );
-        objColEmpty.current =
-          listColumns.current.columns[idxColumnEmpty.current];
-        //push card to column empty
-        listColumns.current.columns[idxColumnEmpty.current].cards.push(
-          objCardStart.current
-        );
-        listColumns.current.columns[idxColumnEmpty.current].cardOrder.push(
-          objCardStart.current.id
-        );
       }
+    } catch (error) {
+      console.error(error);
     }
   };
+  // const swapCard = () => {
+  //   //find  column start / enter
+  //   idxColStart.current = listColumns.current.columns.findIndex(
+  //     (item) => item.id === cardStart.current.columnId
+  //   );
+  //   idxColEnter.current = listColumns.current.columns.findIndex(
+  //     (item) => item.id === cardEnter.current.columnId
+  //   );
+
+  //   if (idxColStart.current !== -1) {
+  //     objColStart.current = listColumns.current.columns[idxColStart.current];
+  //   }
+
+  //   if (idxColEnter.current !== -1) {
+  //     objColEnter.current = listColumns.current.columns[idxColEnter.current];
+  //   }
+
+  //   //find card start / enter
+  //   idxCardStart.current = objColStart.current.cards.findIndex(
+  //     (item) => item.id === cardStart.current.id
+  //   );
+  //   idxCardEnter.current = objColEnter.current.cards.findIndex(
+  //     (item) => item.id === cardEnter.current.id
+  //   );
+  //   objCardStart.current = objColStart.current.cards[idxCardStart.current];
+  //   objCardEnter.current = objColEnter.current.cards[idxCardEnter.current];
+
+  //   //swap card start/enter
+  //   if (
+  //     idxColStart.current === idxColEnter.current &&
+  //     columnEmpty.current === null
+  //   ) {
+  //     //swap card in one column
+  //     listColumns.current.columns[idxColStart.current].cards[
+  //       idxCardStart.current
+  //     ] = objCardEnter.current;
+  //     listColumns.current.columns[idxColEnter.current].cards[
+  //       idxCardEnter.current
+  //     ] = objCardStart.current;
+
+  //     //swap orderCard in one column
+  //     listColumns.current.columns[idxColStart.current].cardOrder[
+  //       idxCardStart.current
+  //     ] = objCardEnter.current.id;
+
+  //     listColumns.current.columns[idxColEnter.current].cardOrder[
+  //       idxCardEnter.current
+  //     ] = objCardStart.current.id;
+  //   } else {
+  //     objCardStart.current.columnId =
+  //       columnEmpty.current === null
+  //         ? objCardEnter.current.columnId
+  //         : columnEmpty.current.id;
+
+  //     //remove card from column start
+  //     listColumns.current.columns[idxColStart.current].cards =
+  //       listColumns.current.columns[idxColStart.current].cards.filter(
+  //         (item) => item.id !== objCardStart.current.id
+  //       );
+  //     listColumns.current.columns[idxColStart.current].cardOrder =
+  //       listColumns.current.columns[idxColStart.current].cardOrder.filter(
+  //         (item) => item !== objCardStart.current.id
+  //       );
+
+  //     if (columnEmpty.current === null) {
+  //       //push //push card to column enter
+  //       if (isDragFooter.current) {
+  //         listColumns.current.columns[idxColEnter.current].cards.push(
+  //           objCardStart.current
+  //         );
+  //         listColumns.current.columns[idxColEnter.current].cardOrder.push(
+  //           objCardStart.current.id
+  //         );
+  //         isDragFooter.current = false;
+  //       } else {
+  //         listColumns.current.columns[idxColEnter.current].cards.splice(
+  //           idxCardEnter.current,
+  //           0,
+  //           objCardStart.current
+  //         );
+  //         listColumns.current.columns[idxColEnter.current].cardOrder.splice(
+  //           idxCardEnter.current,
+  //           0,
+  //           objCardStart.current.id
+  //         );
+  //       }
+  //     } else {
+  //       idxColumnEmpty.current = listColumns.current.columns.findIndex(
+  //         (item) => item.id === columnEmpty.current.id
+  //       );
+  //       objColEmpty.current =
+  //         listColumns.current.columns[idxColumnEmpty.current];
+  //       //push card to column empty
+  //       listColumns.current.columns[idxColumnEmpty.current].cards.push(
+  //         objCardStart.current
+  //       );
+  //       listColumns.current.columns[idxColumnEmpty.current].cardOrder.push(
+  //         objCardStart.current.id
+  //       );
+  //     }
+  //   }
+  // };
 
   const handleHeaderColDragStart = (e) => {
     e.target.parentElement.classList.add("is-column-dragging");
@@ -387,6 +493,8 @@ const Column = (props) => {
 
     //add order card
     listColumns.current.columns[idxCardAdd].cardOrder.push(dataCardNew.id);
+    localStorage.setItem("listColumns", JSON.stringify(listColumns.current));
+
     await createCard(dataCardNew);
   };
 
@@ -456,7 +564,7 @@ const Column = (props) => {
         onDragOver={(e) => handleCardDragOver(e)}
         onDragLeave={(e) => handleDragCardLeave(e)}
       >
-        {cards.map((card, index) => {
+        {cards?.map((card, index) => {
           return (
             <div
               key={card.id}
