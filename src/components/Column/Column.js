@@ -1,3 +1,4 @@
+import { debounce } from "lodash";
 import React, { useRef, useState } from "react";
 import { GrClose } from "react-icons/gr";
 import {
@@ -7,7 +8,7 @@ import {
   updateColumn,
 } from "../../services/apiServices";
 import { mapOrder } from "../../utilities/sorts";
-import Card from "../Card/Card";
+import ListCard from "../Card/ListCard";
 import AddCard from "./AddCard";
 import "./Column.scss";
 import HeaderColumn from "./HeaderColumn";
@@ -67,14 +68,7 @@ const Column = (props) => {
   });
 
   window.addEventListener("dragstart", (e) => {
-    setShowAddCard(false);
-    if (cloneColumnDrag.current) {
-      cloneColumnDrag.current.classList.add("dragged-item");
-      document.body.appendChild(cloneColumnDrag.current);
-    } else if (cloneCardDrag.current) {
-      cloneCardDrag.current.classList.add("dragged-item");
-      document.body.appendChild(cloneCardDrag.current);
-    }
+    handleWindowDragStart(e);
   });
 
   //hide from add card when click board
@@ -84,6 +78,26 @@ const Column = (props) => {
 
   //move column drag clone with mouse
   window.addEventListener("dragover", (e) => {
+    handleWindowDragOver(e);
+  });
+
+  //remove clone node when drag end
+  window.addEventListener("dragend", async (e) => {
+    handleWindowDragEnd(e);
+  });
+
+  const handleWindowDragStart = debounce((e) => {
+    setShowAddCard(false);
+    if (cloneColumnDrag.current) {
+      cloneColumnDrag.current.classList.add("dragged-item");
+      document.body.appendChild(cloneColumnDrag.current);
+    } else if (cloneCardDrag.current) {
+      cloneCardDrag.current.classList.add("dragged-item");
+      document.body.appendChild(cloneCardDrag.current);
+    }
+  }, 0);
+
+  const handleWindowDragOver = debounce((e) => {
     e.preventDefault();
     dropMouseY.current = e.clientY;
     //css clone column drag
@@ -98,10 +112,9 @@ const Column = (props) => {
       cloneCardDrag.current.style.left = cloneCardDragX.current + "px";
       cloneCardDrag.current.style.top = cloneCardDragY.current + "px";
     }
-  });
+  }, 0);
 
-  //remove clone node when drag end
-  window.addEventListener("dragend", async (e) => {
+  const handleWindowDragEnd = debounce((e) => {
     e.target.classList.remove("is-card-dragging");
     if (
       (objColEnter.current &&
@@ -148,9 +161,9 @@ const Column = (props) => {
       cloneCardDrag.current = null;
     }, 0);
     localStorage.setItem("listColumns", JSON.stringify(listColumns.current));
-  });
+  }, 0);
 
-  const handleCardDragOver = (e) => {
+  const handleCardDragOver = debounce((e) => {
     e.preventDefault();
     if (cards.length === 0) {
       columnEmpty.current = column;
@@ -162,7 +175,7 @@ const Column = (props) => {
     } else {
       colDragEnd.current = column;
     }
-  };
+  }, 0);
 
   const handleDragCardLeave = (e) => {
     if (cards.length === 0) {
@@ -337,108 +350,6 @@ const Column = (props) => {
       console.error(error);
     }
   };
-  // const swapCard = () => {
-  //   //find  column start / enter
-  //   idxColStart.current = listColumns.current.columns.findIndex(
-  //     (item) => item.id === cardStart.current.columnId
-  //   );
-  //   idxColEnter.current = listColumns.current.columns.findIndex(
-  //     (item) => item.id === cardEnter.current.columnId
-  //   );
-
-  //   if (idxColStart.current !== -1) {
-  //     objColStart.current = listColumns.current.columns[idxColStart.current];
-  //   }
-
-  //   if (idxColEnter.current !== -1) {
-  //     objColEnter.current = listColumns.current.columns[idxColEnter.current];
-  //   }
-
-  //   //find card start / enter
-  //   idxCardStart.current = objColStart.current.cards.findIndex(
-  //     (item) => item.id === cardStart.current.id
-  //   );
-  //   idxCardEnter.current = objColEnter.current.cards.findIndex(
-  //     (item) => item.id === cardEnter.current.id
-  //   );
-  //   objCardStart.current = objColStart.current.cards[idxCardStart.current];
-  //   objCardEnter.current = objColEnter.current.cards[idxCardEnter.current];
-
-  //   //swap card start/enter
-  //   if (
-  //     idxColStart.current === idxColEnter.current &&
-  //     columnEmpty.current === null
-  //   ) {
-  //     //swap card in one column
-  //     listColumns.current.columns[idxColStart.current].cards[
-  //       idxCardStart.current
-  //     ] = objCardEnter.current;
-  //     listColumns.current.columns[idxColEnter.current].cards[
-  //       idxCardEnter.current
-  //     ] = objCardStart.current;
-
-  //     //swap orderCard in one column
-  //     listColumns.current.columns[idxColStart.current].cardOrder[
-  //       idxCardStart.current
-  //     ] = objCardEnter.current.id;
-
-  //     listColumns.current.columns[idxColEnter.current].cardOrder[
-  //       idxCardEnter.current
-  //     ] = objCardStart.current.id;
-  //   } else {
-  //     objCardStart.current.columnId =
-  //       columnEmpty.current === null
-  //         ? objCardEnter.current.columnId
-  //         : columnEmpty.current.id;
-
-  //     //remove card from column start
-  //     listColumns.current.columns[idxColStart.current].cards =
-  //       listColumns.current.columns[idxColStart.current].cards.filter(
-  //         (item) => item.id !== objCardStart.current.id
-  //       );
-  //     listColumns.current.columns[idxColStart.current].cardOrder =
-  //       listColumns.current.columns[idxColStart.current].cardOrder.filter(
-  //         (item) => item !== objCardStart.current.id
-  //       );
-
-  //     if (columnEmpty.current === null) {
-  //       //push //push card to column enter
-  //       if (isDragFooter.current) {
-  //         listColumns.current.columns[idxColEnter.current].cards.push(
-  //           objCardStart.current
-  //         );
-  //         listColumns.current.columns[idxColEnter.current].cardOrder.push(
-  //           objCardStart.current.id
-  //         );
-  //         isDragFooter.current = false;
-  //       } else {
-  //         listColumns.current.columns[idxColEnter.current].cards.splice(
-  //           idxCardEnter.current,
-  //           0,
-  //           objCardStart.current
-  //         );
-  //         listColumns.current.columns[idxColEnter.current].cardOrder.splice(
-  //           idxCardEnter.current,
-  //           0,
-  //           objCardStart.current.id
-  //         );
-  //       }
-  //     } else {
-  //       idxColumnEmpty.current = listColumns.current.columns.findIndex(
-  //         (item) => item.id === columnEmpty.current.id
-  //       );
-  //       objColEmpty.current =
-  //         listColumns.current.columns[idxColumnEmpty.current];
-  //       //push card to column empty
-  //       listColumns.current.columns[idxColumnEmpty.current].cards.push(
-  //         objCardStart.current
-  //       );
-  //       listColumns.current.columns[idxColumnEmpty.current].cardOrder.push(
-  //         objCardStart.current.id
-  //       );
-  //     }
-  //   }
-  // };
 
   const handleHeaderColDragStart = (e) => {
     e.target.parentElement.classList.add("is-column-dragging");
@@ -564,27 +475,18 @@ const Column = (props) => {
         onDragOver={(e) => handleCardDragOver(e)}
         onDragLeave={(e) => handleDragCardLeave(e)}
       >
-        {cards?.map((card, index) => {
-          return (
-            <div
-              key={card.id}
-              draggable={isDragCard}
-              onDragStart={(e) => handleDragCardStart(e, card)}
-              onDragEnd={(e) => handleDragEnd(e, card)}
-              onDragEnter={(e) => handleDragCardEnter(e, card)}
-            >
-              <Card
-                card={card}
-                listColumns={listColumns}
-                indexColumn={indexColumn}
-                indexCard={index}
-                setIsDragCard={setIsDragCard}
-                draggingCard={draggingCard}
-                setCards={setCards}
-              />
-            </div>
-          );
-        })}
+        <ListCard
+          setCards={setCards}
+          setIsDragCard={setIsDragCard}
+          cards={cards}
+          isDragCard={isDragCard}
+          handleDragCardStart={handleDragCardStart}
+          handleDragEnd={handleDragEnd}
+          handleDragCardEnter={handleDragCardEnter}
+          listColumns={listColumns}
+          indexColumn={indexColumn}
+          draggingCard={draggingCard}
+        />
 
         {showAddCard && (
           <>

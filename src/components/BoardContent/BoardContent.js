@@ -58,36 +58,36 @@ function BoardContent(props) {
   ];
 
   useEffect(() => {
-    window.addEventListener("mousedown", (e) => {
-      clickMouseX.current = e.pageX;
-    });
-    window.addEventListener("dragover", (e) => {
-      dropMouseX.current = e.pageX;
-    });
-    window.addEventListener("mouseup", (e) => {
-      if (e.target.className === "board-content") {
-        setShowAddColumn(false);
-      }
-    });
-
-    window.addEventListener("dragend", (e) => {
-      e.preventDefault();
-      if (cloneColumnDrag.current) {
-        cloneColumnDrag.current.style.display = "none";
-        cloneColumnDrag.current.remove();
-      }
-      if (cloneCardDrag.current) {
-        cloneCardDrag.current.style.display = "none";
-        cloneCardDrag.current.remove();
-      }
-    });
-
     try {
       triggerApi();
 
       fetchAllColumn();
     } catch (error) {}
   }, []);
+
+  window.addEventListener("mousedown", (e) => {
+    clickMouseX.current = e.pageX;
+  });
+  window.addEventListener("dragover", (e) => {
+    dropMouseX.current = e.pageX;
+  });
+  window.addEventListener("mouseup", (e) => {
+    if (e.target.className === "board-content") {
+      setShowAddColumn(false);
+    }
+  });
+
+  window.addEventListener("dragend", (e) => {
+    e.preventDefault();
+    if (cloneColumnDrag.current) {
+      cloneColumnDrag.current.style.display = "none";
+      cloneColumnDrag.current.remove();
+    }
+    if (cloneCardDrag.current) {
+      cloneCardDrag.current.style.display = "none";
+      cloneCardDrag.current.remove();
+    }
+  });
 
   //fetch all column
   const fetchAllColumn = async () => {

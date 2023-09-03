@@ -1,3 +1,4 @@
+import { debounce } from "lodash";
 import axios, { baseURL } from "./customAxios";
 
 const triggerApi = () => {
@@ -39,7 +40,7 @@ const createColumn = (dataCreate) => {
   return resCreateColumn;
 };
 
-const updateColumn = (dataUpdate) => {
+const updateColumn = debounce((dataUpdate) => {
   const options = {
     id: dataUpdate?.id,
     title: dataUpdate?.title,
@@ -49,7 +50,7 @@ const updateColumn = (dataUpdate) => {
   };
   const resCreateColumn = axios.post("/update-column", options);
   return resCreateColumn;
-};
+}, 300);
 
 const deleteColumn = (columnId, boardId, columnOrder) => {
   const options = {
@@ -72,14 +73,14 @@ const createCard = (dataCreate) => {
   return resCreateCard;
 };
 
-const updateCard = (cardId, cardTitle) => {
+const updateCard = debounce((cardId, cardTitle) => {
   const options = {
     id: cardId,
     title: cardTitle,
   };
 
-  const resUpdateCard = axios.post("update-card", options);
-};
+  axios.post("update-card", options);
+}, 300);
 
 const deleteCard = (cardId, columnId, cardOrder) => {
   const options = {
