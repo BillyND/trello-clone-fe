@@ -92,8 +92,10 @@ function BoardContent(props) {
   //fetch all column
   const fetchAllColumn = async () => {
     const listColumnsLocal = JSON.parse(localStorage.getItem("listColumns"));
-    listColumns.current = listColumnsLocal;
-    setColumns(listColumnsLocal.columns);
+    if (listColumnsLocal) {
+      listColumns.current = listColumnsLocal;
+      setColumns(listColumnsLocal.columns);
+    }
 
     const boardIdFind = "board-1";
     const resAllBoards = await getAllColumn(boardIdFind);
