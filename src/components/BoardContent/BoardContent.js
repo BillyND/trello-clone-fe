@@ -11,6 +11,7 @@ import Column from "../Column/Column";
 import AddColumn from "./AddColumn";
 import "./BoardContent.scss";
 import { initListColumn } from "../../utilities/initData";
+
 function BoardContent(props) {
   const [boardFormDB, setBoardFormDB] = useState([]);
   const [columns, setColumns] = useState([]);
