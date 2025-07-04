@@ -1,13 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
+import { memo } from "react";
 
 function AddCard(props) {
   const { handleAddCard, inputNewCardRef } = props;
   const [titleCard, setTitleCard] = useState("");
   const inputRef = useRef();
+
   useEffect(() => {
     inputRef.current.focus();
     inputNewCardRef.current === "" && setTitleCard("");
   }, [inputNewCardRef.current]);
+
   const objDiv = document.querySelectorAll(".content");
   for (const element of objDiv) {
     setTimeout(() => {
@@ -46,4 +49,4 @@ function AddCard(props) {
   );
 }
 
-export default AddCard;
+export default memo(AddCard);

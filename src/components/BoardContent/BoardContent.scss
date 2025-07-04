@@ -24,8 +24,7 @@ $color-drag: rgb(46, 46, 46);
   padding: $gap;
   display: flex;
   gap: $gap;
-  margin: 0 $gap $gap;
-  overflow-y: hidden;
+   overflow-y: hidden;
   overflow-x: scroll;
 
   &::-webkit-scrollbar {

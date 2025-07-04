@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import UpdateTitleCol from "./UpdateTitleCol";
 import Swal from "sweetalert2";
 
@@ -6,11 +6,13 @@ function HeaderColumn(props) {
   const { column, handleChangeTitleColumn, handleDeleteColumn } = props;
   const [isChangeTitleCol, setIsChangeTitleCol] = useState(false);
 
-  window.addEventListener("mousedown", (e) => {
-    if (e.target.classList[0] !== "form-control") {
-      setIsChangeTitleCol(false);
-    }
-  });
+  useEffect(() => {
+    window.addEventListener("mousedown", (e) => {
+      if (e.target.classList[0] !== "form-control") {
+        setIsChangeTitleCol(false);
+      }
+    });
+  }, []);
 
   return (
     <>

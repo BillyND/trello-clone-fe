@@ -68,7 +68,8 @@ body {
 
 .dragged-item {
   background-color: #fff;
-  position: absolute;
+  position: fixed;
   transform: rotate(5deg);
   border-radius: 7px;
+  pointer-events: none;
 }

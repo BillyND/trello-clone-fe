@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import "./Card.scss";
 import { deleteCard, updateCard } from "../../services/apiServices";
 import Swal from "sweetalert2";
+import { memo } from "react";
 
 function Card(props) {
   const {
@@ -28,13 +29,13 @@ function Card(props) {
         setIsDragCard(true);
       }
     });
-  }, []);
 
-  window.addEventListener("dragstart", (e) => {
-    if (isChangeTitleCard) {
-      setIsChangeTitleCard(false);
-    }
-  });
+    window.addEventListener("dragstart", (e) => {
+      if (isChangeTitleCard) {
+        setIsChangeTitleCard(false);
+      }
+    });
+  }, []);
 
   const handleClickEditCard = async (e) => {
     await setIsChangeTitleCard(true);
@@ -140,4 +141,4 @@ function Card(props) {
   );
 }
 
-export default Card;
+export default memo(Card);

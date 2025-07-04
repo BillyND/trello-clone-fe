@@ -1,5 +1,5 @@
 import { debounce } from "lodash";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { GrClose } from "react-icons/gr";
 import {
   createCard,
@@ -54,38 +54,6 @@ const Column = (props) => {
   const [draggingCard, setDraggingCard] = useState(false);
   const inputNewCardRef = useRef(null);
 
-  window.addEventListener("mousedown", (e) => {
-    clickMouseY.current = e.clientY;
-    dropMouseY.current = e.clientY;
-    if (e.target.classList[0] !== "form-control") {
-      setIsDragCard(true);
-    }
-    if (cloneColumnDrag.current) {
-      document.body.appendChild(cloneColumnDrag.current);
-    } else if (cloneCardDrag.current) {
-      document.body.appendChild(cloneCardDrag.current);
-    }
-  });
-
-  window.addEventListener("dragstart", (e) => {
-    handleWindowDragStart(e);
-  });
-
-  //hide from add card when click board
-  window.addEventListener("mouseup", (e) => {
-    e.target.className === "board-content" && setShowAddCard(false);
-  });
-
-  //move column drag clone with mouse
-  window.addEventListener("dragover", (e) => {
-    handleWindowDragOver(e);
-  });
-
-  //remove clone node when drag end
-  window.addEventListener("dragend", async (e) => {
-    handleWindowDragEnd(e);
-  });
-
   const handleWindowDragStart = (e) => {
     setShowAddCard(false);
     if (cloneColumnDrag.current) {
@@ -103,12 +71,12 @@ const Column = (props) => {
     //css clone column drag
     if (cloneColumnDrag.current) {
       cloneColumnDragX.current = e.pageX - 170;
-      cloneColumnDragY.current = e.pageY;
+      cloneColumnDragY.current = e.pageY - 20;
       cloneColumnDrag.current.style.left = cloneColumnDragX.current + "px";
       cloneColumnDrag.current.style.top = cloneColumnDragY.current + "px";
     } else if (cloneCardDrag.current) {
       cloneCardDragX.current = e.pageX - 130;
-      cloneCardDragY.current = e.pageY + 10;
+      cloneCardDragY.current = e.pageY - 10;
       cloneCardDrag.current.style.left = cloneCardDragX.current + "px";
       cloneCardDrag.current.style.top = cloneCardDragY.current + "px";
     }
@@ -449,6 +417,40 @@ const Column = (props) => {
     };
     await updateColumn(dataUpdate);
   };
+
+  useEffect(() => {
+    window.addEventListener("mousedown", (e) => {
+      clickMouseY.current = e.clientY;
+      dropMouseY.current = e.clientY;
+      if (e.target.classList[0] !== "form-control") {
+        setIsDragCard(true);
+      }
+      if (cloneColumnDrag.current) {
+        document.body.appendChild(cloneColumnDrag.current);
+      } else if (cloneCardDrag.current) {
+        document.body.appendChild(cloneCardDrag.current);
+      }
+    });
+
+    window.addEventListener("dragstart", (e) => {
+      handleWindowDragStart(e);
+    });
+
+    //hide from add card when click board
+    window.addEventListener("mouseup", (e) => {
+      e.target.className === "board-content" && setShowAddCard(false);
+    });
+
+    //move column drag clone with mouse
+    window.addEventListener("dragover", (e) => {
+      handleWindowDragOver(e);
+    });
+
+    //remove clone node when drag end
+    window.addEventListener("dragend", async (e) => {
+      handleWindowDragEnd(e);
+    });
+  }, []);
 
   return (
     <>
